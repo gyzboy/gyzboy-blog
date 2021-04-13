@@ -1,0 +1,4 @@
+baseURL = "https://gyzboy.github.io/"
+languageCode = "en-us"
+title = "面试宝典"
+theme = "hugo-geekdoc"
