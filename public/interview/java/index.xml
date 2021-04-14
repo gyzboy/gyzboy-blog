@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Java on 十万个为什么</title>
+    <link>https://gyzboy.github.io/interview/java/</link>
+    <description>Recent content in Java on 十万个为什么</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 13 Apr 2021 16:12:16 +0800</lastBuildDate><atom:link href="https://gyzboy.github.io/interview/java/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>GC</title>
+      <link>https://gyzboy.github.io/interview/java/gc/</link>
+      <pubDate>Tue, 13 Apr 2021 16:12:16 +0800</pubDate>
+      
+      <guid>https://gyzboy.github.io/interview/java/gc/</guid>
+      <description>  Q:垃圾收集算法? Q:如和判断一个对象是否存活?引用计数法和可达性算法哪个更加好？如何理解一个对象不一定会被回收？   Q:垃圾收集算法?     标记-清除:在标记阶段，程序会检查每个对象是否为活动对象，如果是活动对象，则程序会在对象头部打上标记。在清除阶段，会进行对象回收并取消标志位，另外，还会判断回收后的分块与前一个空闲分块是否连续，若连续，会合并这两个分块 标记-整理:让所有存活的对象都向一端移动，然后直接清理掉端边界以外的内存 复制:将内存划分为大小相等的两块，每次只使用其中一块，当这一块内存用完了就将还存活的对象复制到另一块上面，然后再把使用过的内存空间进行一次清理。 分代收集:新生代使用：复制算法,老年代使用：标记 - 清除 或者 标记 - 整理 算法  Q:如和判断一个对象是否存活?引用计数法和可达性算法哪个更加好？如何理解一个对象不一定会被回收？       引用计数法   所谓引用计数法就是给每一个对象设置一个引用计数器，每当有一个地方引用这个对象时，就将计数器加一，引用失效时，计数器就减一。当一个对象的引用计数器为零时，说明此对象没有被引用，也就是“死对象”,将会被垃圾回收. 引用计数法有一个缺陷就是无法解决循环引用问题，也就是说当对象A引用对象B，对象B又引用者对象A，那么此时A,B对象的引用计数器都不为零，也就造成无法完成垃圾回收，所以主流的虚拟机都没有采用这种算法。   2.可达性算法(引用链法)  该算法的思想是：从一个被称为GC Roots的对象开始向下搜索，如果一个对象到GC Roots没有任何引用链相连时，则说明此对象不可用。 在java中可以作为GC Roots的对象有以下几种:  虚拟机栈中引用的对象 方法区类静态属性引用的对象 方法区常量池引用的对象 本地方法栈JNI引用的对象     如何理解一个对象不一定会被回收？  虽然这些算法可以判定一个对象是否能被回收，但是当满足上述条件时，一个对象比不一定会被回收。当一个对象不可达GC Root时，这个对象并不会立马被回收，而是出于一个死缓的阶段，若要被真正的回收需要经历两次标记 如果对象在可达性分析中没有与GCRoot的引用链，那么此时就会被第一次标记并且进行一次筛选，筛选的条件是是否有必要执行finalize()方法。当对象没有覆盖finalize()方法或者已被虚拟机调用过，那么就认为是没必要的。 如果该对象有必要执行finalize()方法，那么这个对象将会放在一个称为F-Queue的对队列中，虚拟机会触发一个Finalize()线程去执行，此线程是低优先级的，并且虚拟机不会承诺一直等待它运行完，这是因为如果finalize()执行缓慢或者发生了死锁，那么就会造成F-Queue队列一直等待，造成了内存回收系统的崩溃。GC对处于F-Queue中的对象进行第二次被标记，这时，该对象将被移除”即将回收”集合，等待回收。    </description>
+    </item>
+    
+    <item>
+      <title>I/O</title>
+      <link>https://gyzboy.github.io/interview/java/io/</link>
+      <pubDate>Tue, 13 Apr 2021 16:12:16 +0800</pubDate>
+      
+      <guid>https://gyzboy.github.io/interview/java/io/</guid>
+      <description>  Q:Java中的I/O可以分为几类? Q:NIO和普通I/O区别? Q:字符流和字节流有什么区别？如何选择字节流或者字符流？什么是缓冲区，有什么作用？   Q:Java中的I/O可以分为几类?     磁盘操作：File 字节操作：InputStream 和 OutputStream 字符操作：Reader 和 Writer 对象操作：Serializable 网络操作：Socket 新的输入/输出：NIO  Q:NIO和普通I/O区别?     NIO 是非阻塞的；只有套接字 Channel 才能配置为非阻塞，而 FileChannel 不能，为 FileChannel 配置非阻塞也没有意义 NIO 面向块，I/O 面向流。  Q:字符流和字节流有什么区别？如何选择字节流或者字符流？什么是缓冲区，有什么作用？     区别:  字符流和字节流的使用非常相似，但是实际上字节流的操作不会经过缓冲区（内存）而是直接操作文本本身的，而字符流的操作会先经过缓冲区（内存）然后通过缓冲区再操作文件 字符流是对字节流的包装   如何选择字节流或者字符流？  字符流是由Java虚拟机将字节转化为2个字节的Unicode字符为单位的字符而成的 如果是音频文件、图片、歌曲，就用字节流好点（避免数据丢失） 如果是关系到中文（文本）的，用字符流好点   什么是缓冲区，有什么作用？  缓冲区就是一段特殊的内存区域，很多情况下当程序需要频繁地操作一个资源（如文件或数据库）则性能会很低，所以为了提升性能就可以将一部分数据暂时读写到缓存区，以后直接从此区域中读写数据即可，这样就显著提升了性能。 对于 Java 字符流的操作都是在缓冲区操作的，所以如果我们想在字符流操作中主动将缓冲区刷新到文件则可以使用 flush() 方法操作    </description>
+    </item>
+    
+    <item>
+      <title>JVM</title>
+      <link>https://gyzboy.github.io/interview/java/jvm/</link>
+      <pubDate>Tue, 13 Apr 2021 16:12:16 +0800</pubDate>
+      
+      <guid>https://gyzboy.github.io/interview/java/jvm/</guid>
+      <description>Q:jvm的内存模型是啥样的? Q:类的加载过程? Q:Class.forName() 和ClassLoader.loadClass()区别？实际开发你用那种，为什么？ Q:说一下对象的创建过程？变量创建过程种放在虚拟机哪里？ Q:什么情况下会触发类的初始化? Q:什么是双亲委派模型?有什么优势? Q:为什么会出现破坏双亲委派的模型？是解决了什么问题？ Q:基本数据类型一定存储在栈中吗？ Q:泛型是什么? Q:泛型通配符? Q:泛型擦除是什么?存在什么问题?有哪些补救方案?应用场景是哪些？ Q：泛型和反射有何联系？使用反射来获取泛型信息？getType和getGenericType有何区别？ Q:为什么说反射的效率低? Q:HashCode为什么使用31作为乘数? Q:static变量存储位置是哪里？静态变量的生命周期？静态变量何时销毁？静态引用的对象回收如何理解？ Q:什么是绑定？静态和动态绑定如何区别？动态绑定编译原理是什么？动态绑定运行原理是什么？ Q:为什么内部类调用的局部变量必须是final修饰的？局部变量对垃圾回收机制有什么样的影响？ Q:什么是多态?多态有哪些弊端？Java实现多态有哪些必要条件？什么是向上、向下转型? Q:常见代码块有哪些?执行顺序是什么样子的？ Q:带有类名.变量加载时,加载顺序是怎么样的? Q:Java数据类型有哪些？什么是值传递？什么是引用传递？如何理解值传递和引用传递，以及它们有何区别？   Q:jvm的内存模型是啥样的?     程序计数器:在jvm中，它就是程序控制流的指示器，循环，跳转，异常处理，线程的恢复等工作都需要依赖程序计数器去完成,此内存区域是唯一一个在Java虚拟机规范中没有规定任何OutOfMemotyError情况的区域 虚拟机栈:在每个方法执行的时候，jvm都会同步创建一个栈帧去存储局部变量表，操作数栈，动态连接，方法返回值等信息。一个方法的生命周期就贯彻了一个栈帧从入栈到出栈的全部过程。局部变量表应该是我们接触的最多的，里面存储了java的8大基本数据类型（byte、short、char、int、float、long、double、boolean）、对象引用(reference类型，不是对象本身，是指向对象的引用)和returnAddress类型（指向一条字节码指令的地址）， 本地方法栈:native方法栈 堆:所有线程共享的一块内存区域，用于存放几乎所有的对象实例和数组，TLAB是线程私有的，在堆空间中分配，对象会首先存放在这个线程私有的TLAB中，可以提升线程分配的效率 方法区:方法区也是所有线程共享的区域，储存虚拟机加载的类信息，常量，静态变量，编译后的代码。运行时常量池就是方法区的一部分，代表运行时每个class文件中的常量表。包括几种常量：编译时的数字常量、方法或者域的引用,Java语言并不要求常量一定只有编译期才能产生，也就是可能将新的常量放入池中，这种特性被开发人员利用得比较多的便是String类的intern()方法  Q:类的加载过程?    加载、验证、准备、初始化、卸载这五个阶段的顺序是确定的，是依次有序的。但是解析阶段有可能会在初始化之后才会进行，这是为了支持java动态绑定的特性
+Q:Class.forName() 和ClassLoader.loadClass()区别？实际开发你用那种，为什么？     Class.forName() 和ClassLoader.loadClass()区别？  Class.forName() 默认执行类加载过程中的连接与初始化动作，一旦执行初始化动作，静态变量就会被初始化为程序员设置的值，如果有静态代码块，静态代码块也会被执行 ClassLoader.loadClass() 默认只执行类加载过程中的加载动作，后面的动作都不会执行    Q:说一下对象的创建过程？变量创建过程种放在虚拟机哪里？     说一下对象的创建过程？比如：Dog dog= new Dog()；  当虚拟机执行到new指令时，它先在常量池中查找“Dog”，看能否定位到Dog类的符号引用；如果能，说明这个类已经被加载到方法区了，则继续执行。如果没有，就让Class Loader先执行类的加载。 然后，虚拟机开始为该对象分配内存，对象所需要的内存大小在类加载完成后就已经确定了。这时候只要在堆中按需求分配空间即可。具体分配内存时有两种方式，第一种，内存绝对规整，那么只要在被占用内存和空闲内存间放置指针即可，每次分配空间时只要把指针向空闲内存空间移动相应距离即可，当某对象被GC回收后，则需要进行某些对象内存的迁移。第二种，空闲内存和非空闲内存夹杂在一起，那么就需要用一个列表来记录堆内存的使用情况，然后按需分配内存。 对于多线程的情况，如何确保一个线程分配了对象内存但尚未修改内存管理指针时，其他线程又分配该块内存而覆盖的情况？有一种方法，就是让每一个线程在堆中先预分配一小块内存（TLAB本地线程分配缓冲），每个线程只在自己的内存中分配内存。但对象本身按其访问属性是可以线程共享访问的。 内存分配到后，虚拟机将分配的内存空间都初始化为零值(不包括对象头)。实例变量按变量类型初始化相应的默认值（数值型为0，boolan为false），所以实例变量不赋初值也能使用。接着设置对象头信息，比如对象的哈希值，GC分代年龄等。 从虚拟机角度，此时一个新的对象已经创建完成了。但从我们程序运行的角度，新建对象才刚刚开始，对象的构造方法还没有执行。只有执行完构造方法，按构造方法进行初始化后，对象才是彻底创建完成了。构造函数的执行还涉及到调用父类构造器，如果没有显式声明调用父类构造器，则自动添加默认构造器。 new运算符可以返回堆中这个对象的引用   变量创建过程种放在虚拟机哪里？  变量是实例变量、局部变量或静态变量的不同将引用放在不同的地方：  如果dog局部变量，dog变量在栈帧的局部变量表，这个对象的引用就放在栈帧。 如果dog是实例变量，dog变量在堆中，对象的引用就放在堆。 如果dog是静态变量，dog变量在方法区，对象的引用就放在方法区。      Q:什么情况下会触发类的初始化?</description>
+    </item>
+    
+    <item>
+      <title>多线程</title>
+      <link>https://gyzboy.github.io/interview/java/%E5%A4%9A%E7%BA%BF%E7%A8%8B/</link>
+      <pubDate>Tue, 13 Apr 2021 16:12:16 +0800</pubDate>
+      
+      <guid>https://gyzboy.github.io/interview/java/%E5%A4%9A%E7%BA%BF%E7%A8%8B/</guid>
+      <description>Q:什么是ThreadLocal?是如何实现的? Q:ThreadLocal造成内存泄漏的原因?如何解决? Q:如何保证线程的处理是安全的? Q:JAVA中的锁有哪些处理方式？ Q:java虚拟机中对象头的锁结构是什么样的? Q:synchroinized是如何进行锁升级的? Q:线程的生命周期? Q:启动一个thread有哪几种方法?有什么区别? Q:yield和sleep有什么异同? Q:interrupted在阻塞态跟非阻塞态不同表现? Q:为什么不建议使用stop停止线程? Q:多线程三要素? Q:synchronized即可修饰非静态方式，也可修饰静态方法，还可修饰代码块，有何区别？ Q:造成死锁的原因? Q:voliate原理? Q:CAS是什么?有什么问题？ Q:线程池原理?有几种运行状态? Q:Worker 的实现类，为什么不使用 ReentrantLock 来实现呢，而是自己继承AQS? Q:AQS锁有哪些?各有什么特点? Q:公平锁是如何实现的? Q:CountDownLactch与CyclicBarrier区别? Q:Java中锁的类型? Q:锁优化都有哪些?   Q:什么是ThreadLocal?是如何实现的?    线程本地存储区（Thread Local Storage，简称为TLS），每个线程都有自己的私有的本地存储区域，不同线程之间彼此不能访问对方的TLS区域 ThreadLocal的数据结构
+//threadLocalHashCode的值是HASH_INCREMENT = 0x61c88647每次+1,取0x61c88647是因为这个值是黄金分割点 //每个线程有唯一的一个ThreadLocalMap,每个ThreadLocalMap中可以存放多个ThreadLocal对象 ThreadLocalMap(ThreadLocal firstKey, Object firstValue) { table = new Entry[INITIAL_CAPACITY]; //table是一个弱引用对象数组  //INITIAL_CAPACITY=16  int i = firstKey.threadLocalHashCode &amp;amp; (INITIAL_CAPACITY - 1);//有hash证明这是个采用哈希散列方式进行存储  table[i] = new Entry(firstKey, firstValue); size = 1; setThreshold(INITIAL_CAPACITY);//设置扩容因子为len * 2 / 3 } cleanSomeSlots:启发式清理,试探的扫描一些单元格，寻找过期元素，也就是被垃圾回收的元素 expungeStaleEntry:探测式清理,是以当前遇到的 GC 元素开始，向后不断的清理。直到遇到 null 为止，才停止 rehash 计算</description>
+    </item>
+    
+    <item>
+      <title>字符串</title>
+      <link>https://gyzboy.github.io/interview/java/%E5%AD%97%E7%AC%A6%E4%B8%B2/</link>
+      <pubDate>Tue, 13 Apr 2021 16:12:16 +0800</pubDate>
+      
+      <guid>https://gyzboy.github.io/interview/java/%E5%AD%97%E7%AC%A6%E4%B8%B2/</guid>
+      <description>Q:字符编码 Q:Stirng不可变原因? Q:为什么要设计为不可变? Q:字符编码?   Q:字符编码     GBK 编码中，中文字符占 2 个字节，英文字符占 1 个字节； UTF-8 编码中，中文字符占 3 个字节，英文字符占 1 个字节； UTF-16be 编码中，中文字符和英文字符都占 2 个字节  Q:Stirng不可变原因?     String主要的三个成员变量 char value[]， int offset, int count均是private，final的，并且没有对应的 getter/setter; String 对象一旦初始化完成，上述三个成员变量就不可修改；并且其所提供的接口任何对这些域的修改都将返回一个新对象； 技术博客大总结 是典型的 Immutable 类，被声明成为 final class，所有属性也都是final的。也由于它的不可变，类似拼接、裁剪字符串等动作，都会产生新的 String 对象。  Q:为什么要设计为不可变?     可以缓存 hash 值 因为 String 的 hash 值经常被使用，例如 String 用做 HashMap 的 key。不可变的特性可以使得 hash 值也不可变，因此只需要进行一次计算。 String Pool 的需要 如果一个String对象已经被创建过了，那么就会从 String Pool 中取得引用。只有 String 是不可变的，才可能使用 String Pool。 安全性 String 经常作为参数，String 不可变性可以保证参数不可变。例如在作为网络连接参数的情况下如果 String 是可变的，那么在网络连接过程中，String 被改变，改变 String 对象的那一方以为现在连接的是其它主机，而实际情况却不一定是。 线程安全 String 不可变性天生具备线程安全，可以在多个线程中安全地使用。  Q:字符编码?</description>
+    </item>
+    
+    <item>
+      <title>异常</title>
+      <link>https://gyzboy.github.io/interview/java/%E5%BC%82%E5%B8%B8/</link>
+      <pubDate>Tue, 13 Apr 2021 16:12:16 +0800</pubDate>
+      
+      <guid>https://gyzboy.github.io/interview/java/%E5%BC%82%E5%B8%B8/</guid>
+      <description>Q:被检查的异常和不受检查的异常有什么区别? Q:异常处理的原理？ Q:try-finally-return执行顺序?   Q:被检查的异常和不受检查的异常有什么区别?     受检查异常  被检查的异常应该用try-catch块代码处理，或者在main方法中用throws关键字让JRE了解程序可能抛出哪些异常。 Exception是所有被检查异常的基类 被检查的异常适用于那些不是因程序引起的错误情况，比如：读取文件时文件不存在引发的FileNotFoundException   不受检查异常  不受检查的异常在程序中不要求被处理或用throws语句告知。 RuntimeException是所有不受检查异常的基类。 不被检查的异常通常都是由于糟糕的编程引起的，比如：在对象引用时没有确保对象非空而引起的NullPointerException    Q:异常处理的原理？    Java虚拟机用方法调用栈（method invocation stack）来跟踪每个线程中一系列的方法调用过程。如果在执行方法过程中抛出异常，则Java虚拟机必须找到能捕获该异常的catch代码块。当Java虚拟机追溯到调用栈的底部的方法的时候，如果仍然没有找到处理该异常的代码块，这样它就会按步骤处理，首先会打印方法调用栈的异常信息，然后如果所处的线程不是主线程，那么就会终止这个线程
+Q:try-finally-return执行顺序?    public class TestReturn { public int test(){ int x = 1; try{ return ++x; } catch(Exception e){ }finally{ return ++x; } //return x;  } public static void main(String[] args){ TestReturn t = new TestReturn(); int result = t.</description>
+    </item>
+    
+    <item>
+      <title>集合</title>
+      <link>https://gyzboy.github.io/interview/java/%E9%9B%86%E5%90%88/</link>
+      <pubDate>Tue, 13 Apr 2021 16:12:16 +0800</pubDate>
+      
+      <guid>https://gyzboy.github.io/interview/java/%E9%9B%86%E5%90%88/</guid>
+      <description>HashMap:  Q:准备用HashMap存1w条数据，构造时传10000还会触发扩容吗？ Q:扰动函数是什么?有什么用? Q:HashMap中的初始化容量,如果传入17,最初的大小是多少? Q:HashMap的数据存储? Q:HashMap.put数据是怎么样的?需要注意些什么? Q:HashMap中红黑树是怎么实现新增的? Q:链表转红黑树定义的长度为什么是8？ Q:HashMap为什么每次都是以 2的幂次方扩容？ Q:HashMap是如何进行resize操作的? Q:HashMap为什么不直接使用hashCode()处理后的哈希值直接作为table的下标？   ArrayList:  Q:ArrayList解析?   CopyOnWriteArrayList:  Q:CopyOnWriteArrayList是如何保证线程安全的? Q:CopyOnWriteArraylist中已经有互斥锁了,为什么还需要copy数据?   ConcurrentHashMap:  Q:ConcurrentHashMap是如何保证线程安全的?   LinkedHashMap:  Q:LinkedHashMap是如何实现LRU的?   队列  Q:队列的存取 API 都有什么区别？比如 put take 和 offer poll? Q:ArrayBlockingQueue有什么特点? Q:哪些队列有阻塞功能?是如何实现的? Q:假设 SynchronousQueue 底层使用的是堆栈，线程 1 执行 take 操作阻塞住了，然后有线程 2 执行 put 操作，问此时线程 2 是如何把 put 的数据传递给 take 的？   Q:描述下ArrayMap? Q:TreeMap 的内部是怎么排序的?</description>
+    </item>
+    
+  </channel>
+</rss>

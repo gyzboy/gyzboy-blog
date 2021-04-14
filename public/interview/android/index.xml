@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Android on 十万个为什么</title>
+    <link>https://gyzboy.github.io/interview/android/</link>
+    <description>Recent content in Android on 十万个为什么</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 13 Apr 2021 16:12:16 +0800</lastBuildDate><atom:link href="https://gyzboy.github.io/interview/android/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>事件处理</title>
+      <link>https://gyzboy.github.io/interview/android/%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://gyzboy.github.io/interview/android/%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86/</guid>
+      <description>Q:如何捕获activity中的所有点击事件? Q:说说view中的事件分发? Q:如果我只想有view的拖拽事件，而不想要view的点击事件，让你重写这个view的拖拽怎么设计? Q:里面的view在onTouchEvent中消费，然后拖动手指，直到手指从其他他viewgroup上挪开手指 Q:view的onTouch和onTouchEvent事件的区别？ Q:view的onClick事件在什么时候触发的，和onTouch有什么区别? Q:事件是先到window的还是先到decorview的,为什么这样设计? Q:一个点击事件是如何从屏幕传递到view的? Q:MotionEvent是什么?有什么用? Q:ACTION_CANCEL是如何触发的? Q:几个监听Lisner动作回调的优先级是如何? Q:滑动冲突如何解决? Q:Activity的分发方法中调用了onUserInteraction()方法，你能说说这个方法有什么作用吗？ Q:ViewGroup是如何将多个手指产生的事件准确分发给不同的子view的？   Q:如何捕获activity中的所有点击事件?     事件分发方案。通过重写Activity的dispatchTouchEvent方法，对页面上的点击事件进行拦截。但是拦截不到Dialog中的点击事件，因为事件分发由DecorView开始发起，但是Dialog所处的DecorView和Activity的DecorView不是同一个，所以无法在Activitiy的dispatchTouchEvent方法进行拦截Dialog中的点击事件。 hook替换OnClickListener方案。这个方案主要是通过替换View中的mOnClickListener为我们自己的OnClickListener，然后进行点击事件的拦截处理。但是这个方案需要获取替换的那个View才行，所以新增的View和Dialog都需要单独处理才行。新增的View需要进行当前页面的View树进行监听，Dialog必须对Dialog中的View再进行一次hook。 AspectJ切面编程方案。这个方案是在编译期将代码插入到目标方法中，所以只要找到切点——也就是View中的onClick方法即可。可以完美解决我们的问题，并且不需要用户另外操作。 无障碍服务方案。这个方案是通过Android中的无障碍服务，对APP中的所有点击事件进行拦截，对应的事件就是AccessibilityEvent.TYPE_VIEW_CLICKED。该方案也能完美解决我们的问题，但是有个很大的缺点，就是需要用户单独去设置页面开启该辅助服务才行。  Q:说说view中的事件分发?    ACTION_DOWN情况下:dispatchTouchEvent-&amp;gt;onIntercepterTouchEvenet-&amp;gt;onTouchEvent
+Q:如果我只想有view的拖拽事件，而不想要view的点击事件，让你重写这个view的拖拽怎么设计?    onTouchEvent中return true
+Q:里面的view在onTouchEvent中消费，然后拖动手指，直到手指从其他他viewgroup上挪开手指    一旦事件点击序列传到了view中,这个序列中的所有操作都交给这个view去处理
+Q:view的onTouch和onTouchEvent事件的区别？    onTouch指setOnTouchListener的回调方法，它是优先于onTouchEvent事件的,如果onTouch方法返回true，是不会触发onTouchEvent事件的
+Q:view的onClick事件在什么时候触发的，和onTouch有什么区别?    在onTouchEvent中的ACTION_UP中触发的,onTouch是在dispatchTouchEvent中触发的
+Q:事件是先到window的还是先到decorview的,为什么这样设计?    这样设计是为了解耦，Activity只持有phonewindow,ViewRootImpl只持有decorview,phonewindow可以把事件分发到decorview
+Q:一个点击事件是如何从屏幕传递到view的?    Q:MotionEvent是什么?有什么用?    一个MotionEvent对象内部使用一个数组来维护所有触控点的信息 UP/DOWN类型的事件包含了触控点索引，可以根据该索引做出对应的操作 触控点的索引是变化的，不能作为跟踪的依据，而必须依据触控点id</description>
+    </item>
+    
+    <item>
+      <title>Activity</title>
+      <link>https://gyzboy.github.io/interview/android/activity/</link>
+      <pubDate>Tue, 13 Apr 2021 16:12:16 +0800</pubDate>
+      
+      <guid>https://gyzboy.github.io/interview/android/activity/</guid>
+      <description>Q:简述下Activity相关生命周期 Q:onStart调用后,用户就真正可以看见activity了吗? Q:Activity生命周期中,任务栈是怎么变化的 Q:onSaveInstance和onRestoreInstance的调用时机,系统会默认干些什么 Q:为什么不建议在onPause中处理耗时操作 Q:什么情况下activity会调用onPause Q:activity在onDestroy中做了什么？ Q:哪些是在activity清单文件配置中的必要元素,哪些是发布后不建议修改元素,为什么 Q:intent-filter过滤器是什么，有什么作用,其中各标签代表什么含义 Q:intent-filter是如何响应,然后启动activity的 Q:activity中的权限控制是怎么样的,详细解释下 Q:用户离开activity时,activity一定会被销毁吗？ Q:activity实例的销毁时机,系统会直接销毁activity吗 Q:setResult调用时机 Q:setResult可能会出现什么问题?如何解决？ Q:在有setResult时,activity的生命周期是什么样的? Q:activityA启动activityB时的生命周期?为什么要这样设计? Q:activity状态改变 Q:activity还有其他什么生命周期的函数,分别调用时机是什么时刻 Q:activity启动方式 Q:taskAffinity是做什么用的?有什么具体的应用场景? Q:如果一个A Activity（standard）启动B Activity（singleInstance），这个时候用户点击了手机最近访问列表，然后在再点击该App所在的界面（卡片），然后这个时候点击返回键,会发生什么?为什么? Q:任务，任务栈，前台任务栈，后台任务栈，返回栈分别是什么？ Q:有多少种操作activity任务堆栈的方式?操作的结果是什么？ Q:可以从后台启动activity吗?怎么做?   Q:在不同的生命周期内调用finish的生命周期是怎么样的? Q:finish调用后会立刻调用onStop、onDestroy吗？不会的话,为什么? Q:如果App还存在缓存进程，这个时候启动App，应用Application的onCreate方法会执行吗？ Q:启动一个Dialog,activity生命周期是如何变化的?为什么? Q:onSaveInstance是如何实现保持应用状态的?如果在里面传递大量数据会发生什么? Q:onResume执行了就可以认为界面对用户可见了?这种理解对吗? Q:一个activity从创建到用户可见,经历了什么操作,涉及到了哪些生命周期? Q:什么情况下startActivity需要设置Flag=NEW_TASK?为什么?不设置的话会发生什么? Q:activity从启动到显示,都经历了什么? Q:activity在屏幕旋转后如何保持下载不中断? Q:startActivities是干什么用的?activity栈是如何变化的? Q:Activity启动模式与FLAG结合? Q:Flag使用具体使用? Q:子线程可以startActivity吗?会有什么问题?   Q:简述下Activity相关生命周期    onCreate-&amp;gt;onRestart-&amp;gt;onStart-&amp;gt;onRestoreInstance-&amp;gt;onResume-&amp;gt;onPause-&amp;gt;onStop-&amp;gt;onRestrt-&amp;gt;onDestroy onSaveInstance onRestoreInstance
+  onCreate:Activity生命周期的第一个方法，也是我们在android开发中接触的最多的生命周期方法。它本身的作用是进行Activity的一些初始化工作，比如使用setContentView加载布局，对一些控件和变量进行初始化等，此时activity还在后台,不可见
+  onStart:对用户可见(这个可见指的是进程的可见),在此时包含activity进入前台与用户互动之前的最后准备工作
+  onResume:系统会在 Activity 开始与用户互动之前调用此回调。此时，该 Activity 位于 Activity 堆栈的顶部，并会捕获所有用户输入
+  onPause:Activity 失去焦点并进入“已暂停”状态</description>
+    </item>
+    
+    <item>
+      <title>android整体框架相关</title>
+      <link>https://gyzboy.github.io/interview/android/%E6%95%B4%E4%BD%93%E6%A1%86%E6%9E%B6/</link>
+      <pubDate>Tue, 13 Apr 2021 16:12:16 +0800</pubDate>
+      
+      <guid>https://gyzboy.github.io/interview/android/%E6%95%B4%E4%BD%93%E6%A1%86%E6%9E%B6/</guid>
+      <description>Q:进程与应用生命周期之间的关系 Q:系统是如何管理这些进程的? Q:activity启动中都涉及到了哪些类?分别有什么作用？ Q:一个Activity是如何启动的? Q:AMS，Zogyte，App进程，Launcher之间是如何通信的？ Q:为啥Activity启动流程中，大部分都是用Binder通讯，为啥跟Zygote通信的时候要用socket呢？ Q:Android启动流程? Q:ioctl是啥,android哪里用到了? Q:StartActivity的流程?哪里可以做的插件化? Q:startService的启动流程? Q:BindService是什么?为什么 bindService 能和 Activity 的生命周期联动? Q:sendBroadcast原理?什么时候回发生ANR? JobScheduler是什么?有什么用? Q:ANR有哪些场景会发生?   Q:进程与应用生命周期之间的关系     前台进程  它正在用户的互动屏幕上运行一个 Activity（其 onResume() 方法已被调用）。 它有一个 BroadcastReceiver 目前正在运行（其 BroadcastReceiver.onReceive() 方法正在执行）。 它有一个 Service 目前正在执行其某个回调（Service.onCreate()、Service.onStart() 或 Service.onDestroy()）中的代码。   可见进程  它正在运行的 Activity 在屏幕上对用户可见，但不在前台（其 onPause() 方法已被调用）。举例来说，如果前台 Activity 显示为一个对话框，而这个对话框允许在其后面看到上一个 Activity，则可能会出现这种情况。 它有一个 Service 正在通过 Service.startForeground()（要求系统将该服务视为用户知晓或基本上对用户可见的服务）作为前台服务运行。 系统正在使用其托管的服务实现用户知晓的特定功能，例如动态壁纸、输入法服务等。   服务进程  服务流程包含一个已使用 startService() 方法启动的 Service   缓存进程  目前不需要的进程,通常包含用户当前不可见的一个或多个 Activity 实例（onStop() 方法已被调用并返回）    Q:系统是如何管理这些进程的?</description>
+    </item>
+    
+    <item>
+      <title>Glide</title>
+      <link>https://gyzboy.github.io/interview/android/glide/</link>
+      <pubDate>Tue, 13 Apr 2021 16:12:16 +0800</pubDate>
+      
+      <guid>https://gyzboy.github.io/interview/android/glide/</guid>
+      <description>  Q:Glide优势? Q:自己实现一个图片加载框架,需要考虑什么? Q:Glide中这几个点都是如何实现的?   Q:Glide优势?     多种图片格式的缓存，适用于更多的内容表现形式（如Gif、WebP、缩略图、Video） 生命周期集成（根据Activity或者Fragment的生命周期管理图片加载请求） 高效处理Bitmap（bitmap的复用和主动回收，减少系统回收压力） 高效的缓存策略，灵活（Picasso只会缓存原始尺寸的图片，Glide缓存的是多种规格），加载速度快且内存开销小（默认Bitmap格式的不同，使得内存开销是Picasso的一半）  Q:自己实现一个图片加载框架,需要考虑什么?     异步加载：线程池 切换线程：Handler，没有争议吧 缓存：LruCache、DiskLruCache 防止OOM：软引用、LruCache、图片压缩、Bitmap像素存储位置 内存泄露：注意ImageView的正确引用，生命周期管理 列表滑动加载的问题：加载错乱、队满任务过多问题  Q:Glide中这几个点都是如何实现的?     异步加载  private GlideExecutor sourceExecutor; //加载源文件的线程池，包括网络加载  private GlideExecutor diskCacheExecutor; //加载硬盘缓存的线程池  ... private GlideExecutor animationExecutor; //动画线程池 </description>
+    </item>
+    
+    <item>
+      <title>RecyclerView</title>
+      <link>https://gyzboy.github.io/interview/android/recyclerview/</link>
+      <pubDate>Tue, 13 Apr 2021 16:12:16 +0800</pubDate>
+      
+      <guid>https://gyzboy.github.io/interview/android/recyclerview/</guid>
+      <description>Q:RecyclerView中onLayout有哪些步骤流程? Q:RecyclerView中是如何获取ViewHolder的？有哪些步骤流程? Q:什么是pre-layout?什么时候调用? Q:stableID是什么？有什么作用? Q:什么是Scrap？设计思想是什么? Q:mChangedScrap 和 mAttachedScrap区别? Q:如何实现RecyclerView的拖拽排序? Q:当item超过一定数量，如何正确的设置RecyclerView的maxHeight？ Q:RecyclerView中的复用的几个问题 Q:RecyclerView回收些什么? Q:RecyclerView中的ViewHolder回收到哪里去? Q:什么情况下,会调用bindViewHolder? Q:RecyclerView卡片中持有的资源，到底该什么时候释放？ Q:RecyclerView中各级缓存的用途?各存储结构是什么样的? Q:如何设计一个RecyclerView的item点击事件? Q:RecyclerView的预加载是什么? Q:RecyclerView为什么进行预布局? Q:如何实现RecyclerView的局部更新，用过payload吗,notifyItemChange方法中的参数   Q:RecyclerView中onLayout有哪些步骤流程?    RecyclerView.onLayout(...) //布局放置 -&amp;gt;RecyclerView.dispatchLayout() //dispatchLayoutStep1方法等同于pre layout,预布局阶段,记录ViewHolder位置信息；;  -&amp;gt;RecyclerView.dispatchLayoutStep1() ///dispatchLayoutStep2方法处理真正布局的地方  -&amp;gt;RecyclerView.dispatchLayoutStep2() //开启动画阶段  -&amp;gt;RecyclerView.dispatchLayoutStep3() -&amp;gt;RecyclerView.dispatchLayoutStepX() //mLayout是LayoutManager的实例\  -&amp;gt;mLayout.onLayoutChildren(mRecycler, mState);\ //此处查看LinearLayoutManager.fill() 注释：填充给定Layout\  -&amp;gt;LinearLayoutManager.fill(recycler, mLayoutState, state, false);\ //循环调用，每次返回一个\  -&amp;gt;LinearLayoutManager.layoutChunk(recycler, layoutState) \ -&amp;gt;LinearLayoutManager.LayoutState.next()\ //通过 Recycler 获取指定位置的 ItemView\  -&amp;gt;RecyclerView.recycler.getViewForPosition(int position)\ //获取ViewHolder 返回ViewHolder中的ItemView,在这里决定是onCreateView还是bindView\  -&amp;gt;RecyclerView.tryGetViewHolderForPositionByDeadline(***) Q:RecyclerView中是如何获取ViewHolder的？有哪些步骤流程?</description>
+    </item>
+    
+    <item>
+      <title>View</title>
+      <link>https://gyzboy.github.io/interview/android/view/</link>
+      <pubDate>Tue, 13 Apr 2021 16:12:16 +0800</pubDate>
+      
+      <guid>https://gyzboy.github.io/interview/android/view/</guid>
+      <description>Q:View.getContext()一定会返回activity对象吗? Q:View.inflate和LayoutInflater.inflate方法区别？ Q:Inflate的三个参数(int resource, ViewGroup root, boolean attachToRoot),组合设置后分别有什么效果? Q:子线程中可以更新UI吗?为什么? Q:View坐标体系是什么? Q:为什么setTranslation会移动View的位置? Q:为什么View移动的位置跟mScrollX，mScrollY是相反的? Q:都有什么获取view区域的方法?怎么用? Q:View的绘制流程分几步，从哪开始？哪个过程结束以后能看到view？ Q:View什么时候发生绘制? Q:ViewGroup有onMeasure方法吗？为什么? Q:setContentView之后发生了什么？ Q:setContentView可以在其他生命周期内执行吗?为什么? Q:view、drawable、bitmap之间的关系? Q:有了view，为什么还要设计drawable? Q:如何设计一个曝光系统?需要注意些什么? Q:有用过LayoutInflater.Factory吗？都有哪些应用场景? Q:SurfaceView是什么?有哪些应用场景? Q:一个viewGroup 绘制了4-5个view，当其中一个子view。例如背景变了。就会导致整个viewGroup的刷新。。请问有没有办法？仅仅只让对应的view更改UI。避免让viewGroup重新测量 绘制? Q:在绘制阶段，ViewGroup 不光要绘制自身，还需循环绘制其一众子 View，这个绘制策略默认为顺序绘制，即 [0 ~ childCount)。这个默认的策略，有办法调整吗？修改了之后，事件分发需要特殊处理吗？还是需要特殊处理?getChildAt会有相应变化吗? Q:通过ViewTreeObserver都可以监听什么回调?原理是什么? Q:你知道detachViewFromParent/attachViewToParent 这一组方法在哪些控件中被使用中？detachViewFromParent/attachViewToParent 与 removeView/addView 有什么区别呢？detachViewFromParent/attachViewToParent在什么场景下非常适合使用？ Q:requestLayout和invalidate的区别?都会执行到哪些生命周期? Q:ViewStub是什么?有什么应用场景?原理是什么? Q:系统可以在子线程中访问UI吗？为什么这样设计? Q:为什么Toast和showDialog可以在子线程显示?需要做些什么? Q:View.post为何可以获取宽高信息?   Q:View.getContext()一定会返回activity对象吗?    并不是,有这么几种情况:
+ View.inflate的时候手动传的不是activity 当使用AppCompatActivity时,context是TintWrapContext  Q:View.inflate和LayoutInflater.inflate方法区别？    View.inflate是对LayoutInflater的封装,其内部就是调用的LayoutInflater.inflate 创建view的方法是LayoutInflater的createViewFromTag方法。会依次调用mFactory2、mFactory和mPrivateFactory三者之一的onCreateView方法去创建一个View。如果不存在Factory，则调用LayoutInflater自身的onCreateView或者createView来实例化View
+Q:Inflate的三个参数(int resource, ViewGroup root, boolean attachToRoot),组合设置后分别有什么效果?     如果root为null，attachToRoot将失去作用，则resource布局文件最外层设置任何值都没有意义，仅仅是解析布局文件的子View。 如果root不为null，attachToRoot设为true，则会给布局文件指定一个父布局，即root。（merge作为父布局标签为什么需要attachToRoot设为true的原因）,不需要调用addView 如果root不为null，attachToRoot设为false，则会将布局文件最外层的所有layout属性进行设置，当该view被添加到父view当中时，这些layout属性会自动生效。需要调用addView 在不设置attachToRoot参数的情况下，如果root不为null，attachToRoot参数默认为true；如果root为null，attachToRoot参数为false。  Q:子线程中可以更新UI吗?</description>
+    </item>
+    
+    <item>
+      <title>图形系统</title>
+      <link>https://gyzboy.github.io/interview/android/%E5%9B%BE%E5%BD%A2%E7%B3%BB%E7%BB%9F/</link>
+      <pubDate>Tue, 13 Apr 2021 16:12:16 +0800</pubDate>
+      
+      <guid>https://gyzboy.github.io/interview/android/%E5%9B%BE%E5%BD%A2%E7%B3%BB%E7%BB%9F/</guid>
+      <description>Q:SurfaceFlinger是什么?有什么用? Q:什么是Surface? Q:Choreographer是什么?有什么用? Q:Choreographer是如何控制实现在下一个Vsync信号到来时实现View绘制的? Q:ViewRootImpl是如何实现从scheduleTraversals到performTraversals的? Q:ChoreoGrapher在初始化的时候,都做了什么? Q:一些QA Q:HWC是什么?有什么用? Q:Vsync信号是什么? Q:客户端是如何请求Vsync信号的?是合适触发的? Q:说说Android的多重缓冲?   Q:SurfaceFlinger是什么?有什么用?    SurfaceFlinger负责合成所有的Layer并送显到Display,在Android系统中,SurfaceFlinger是一个独立进程
+Q:什么是Surface?    Surface是一个窗口，例如：一个Activity是一个Surface、一个Dialog也是一个Surface，承载了上层的图形数据，与SurfaceFlinger侧的Layer相对应
+Q:Choreographer是什么?有什么用?    在收到VSync pulse后，将马上开始下一帧的渲染。即一旦收到VSync通知，CPU和GPU就立刻开始计算然后把数据写入buffer。而这一&amp;quot;drawing with VSync&amp;quot; 的实现就是Choreographer
+Q:Choreographer是如何控制实现在下一个Vsync信号到来时实现View绘制的?     所有UI的变化都是走到ViewRootImpl的scheduleTraversals()方法。 在VSync信号到来时才会执行绘制，即ViewRootImpl.performTraversals()  Q:ViewRootImpl是如何实现从scheduleTraversals到performTraversals的?     首先使用mTraversalScheduled字段保证同时间多次更改只会刷新一次，例如TextView连续两次setText()，也只会走一次绘制流程。 然后把当前线程的消息队列Queue添加了同步屏障，这样就屏蔽了正常的同步消息，保证VSync到来后立即执行绘制，而不是要等前面的同步消息。后面会具体分析同步屏障和异步消息的代码逻辑。 调用了mChoreographer.postCallback()方法，发送一个会在下一帧执行的回调，即在下一个VSync到来时会执行TraversalRunnable&amp;ndash;&amp;gt;doTraversal()&amp;mdash;&amp;gt;performTraversals()&amp;ndash;&amp;gt;绘制流程。  Q:ChoreoGrapher在初始化的时候,都做了什么?     创建了一个mHandler,FrameHandler:传入当前线程Looper,用来分发每一帧事件,主要有三种:有延迟的任务发延迟消息、不在原线程的发到原线程、没开启VSYNC的直接走 doFrame 方法取执行绘制 VSync事件接收器mDisplayEventReceiver,继承runnable:在onVsync回调中将本身将接收器本身作为runnable传入异步消息msg，并使用mHandler发送msg，最终执行的就是doFrame()方法了,这里因为是使用handler发送消息到MessageQueue中，不一定是立刻执行，如何MessageQueue中前面有较为耗时的操作，那么就要等完成，才会执行本次的doFrame() 任务链表数组mCallbackQueues:建一个链表类型CallbackQueue的数组，大小为5，也就是数组中有五个链表，每个链表存相同类型的任务,按照处理优先级依次为：输入、动画、遍历绘制等任务（CALLBACK_INPUT、CALLBACK_ANIMATION、CALLBACK_TRAVERSAL）  Q:一些QA     丢帧(掉帧) ，是说 这一帧延迟显示 还是丢弃不再显示 ？ 答：延迟显示，因为缓存交换的时机只能等下一个VSync了。 布局层级较多/主线程耗时 是如何造成 丢帧的呢？ 答：布局层级较多/主线程耗时 会影响CPU/GPU的执行时间，大于16.</description>
+    </item>
+    
+    <item>
+      <title>性能优化</title>
+      <link>https://gyzboy.github.io/interview/android/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</link>
+      <pubDate>Tue, 13 Apr 2021 16:12:16 +0800</pubDate>
+      
+      <guid>https://gyzboy.github.io/interview/android/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/</guid>
+      <description>Q:常用内存命令有哪些? Q:启动优化?   Q:常用内存命令有哪些?     USS	Unique Set Size	物理内存	进程独占的内存 PSS	Proportional Set Size	物理内存	PSS= USS+ 按比例包含共享库 RSS	Resident Set Size	物理内存	RSS= USS+ 包含共享库 VSS	Virtual Set Size	虚拟内存	VSS= RSS+ 未分配实际物理内存   dumpsys meminfo //dumpsys meminfo &amp;ndash;package // 输出指定包名的进程，可能包含多个进程 适用场景： 查看进程的oom adj，或者dalvik/native等区域内存情况，或者某个进程或apk的内存情况，功能非常强大； procrank //适用场景： 查看进程的VSS/RSS/PSS/USS各个内存指标； cat /proc/meminfo //适用场景： 查看系统的详尽内存信息，包含内核情况； free //适用场景： 只查看系统的可用内存； showmap //适用场景： 查看进程的虚拟地址空间的内存分配情况； vmstat //适用场景： 周期性地打印出进程运行队列、系统切换、CPU时间占比等情况  Q:启动优化?</description>
+    </item>
+    
+    <item>
+      <title>注解</title>
+      <link>https://gyzboy.github.io/interview/android/%E6%B3%A8%E8%A7%A3/</link>
+      <pubDate>Tue, 13 Apr 2021 16:12:16 +0800</pubDate>
+      
+      <guid>https://gyzboy.github.io/interview/android/%E6%B3%A8%E8%A7%A3/</guid>
+      <description>Q:Android中提供了哪些与线程相关的注解? Q:抽象处理器中四个方法有何作用？annotationProcessor和apt区别？   Q:Android中提供了哪些与线程相关的注解?     @UiThread,通常可以等同于主线程,标注方法需要在UIThread执行,比如View类就使用这个注解 @MainThread 主线程,经常启动后创建的第一个线程 @WorkerThread 工作者线程,一般为一些后台的线程,比如AsyncTask里面的doInBackground就是这样的 @BinderThread 注解方法必须要在BinderThread线程中执行,一般使用较少  Q:抽象处理器中四个方法有何作用？annotationProcessor和apt区别？      抽象处理器中四个方法有何作用
+ init(ProcessingEnvironment processingEnvironment): 每一个注解处理器类都必须有一个空的构造函数。然而，这里有一个特殊的init()方法，它会被注解处理工具调用，并输入ProcessingEnviroment参数。ProcessingEnviroment提供很多有用的工具类Elements,Types和Filer。后面我们将看到详细的内容。 process(Set&amp;lt;? extends TypeElement&amp;gt; set, RoundEnvironment roundEnvironment): 这相当于每个处理器的主函数main()。你在这里写你的扫描、评估和处理注解的代码，以及生成Java文件。输入参数RoundEnviroment，可以让你查询出包含特定注解的被注解元素。后面我们将看到详细的内容。 getSupportedAnnotationTypes(): 这里你必须指定，这个注解处理器是注册给哪个注解的。注意，它的返回值是一个字符串的集合，包含本处理器想要处理的注解类型的合法全称。换句话说，你在这里定义你的注解处理器注册到哪些注解上。 getSupportedSourceVersion(): 用来指定你使用的Java版本。通常这里返回SourceVersion.latestSupported()。然而，如果你有足够的理由只支持Java 7的话，你也可以返回SourceVersion.RELEASE_7    annotationProcessor和apt区别？
+ Android 官方的 annotationProcessor 同时支持 javac 和 jack 编译方式，而 android-apt 只支持 javac 方式。当然，目前 android-apt 在 Android Gradle 插件 2.2 版本上面仍然可以正常运行，如果你没有想支持 jack 编译方式的话，可以继续使用 android-apt。    Q:自定义注解又是怎么分类的？运行期注解原理是什么？     @Retention 定义：  @Retention(RetentionPolicy.</description>
+    </item>
+    
+    <item>
+      <title>消息通信</title>
+      <link>https://gyzboy.github.io/interview/android/%E6%B6%88%E6%81%AF%E9%80%9A%E4%BF%A1/</link>
+      <pubDate>Tue, 13 Apr 2021 16:12:16 +0800</pubDate>
+      
+      <guid>https://gyzboy.github.io/interview/android/%E6%B6%88%E6%81%AF%E9%80%9A%E4%BF%A1/</guid>
+      <description>Q:Linux都有哪些进程间通信方式（IPC）？Android呢? Q:什么是Binder?为什么使用Binder作为Android IPC？ Q:什么是mmap? Q:为什么有共享内存了还需要设计Binder? Q:ServiceManager启动流程? Q:Binder线程池大小? Q:Binder创建的内核内存大小? Q:Binder进程与线程? Q:如果有多个进程向用一个Server服务发出Binder请求处理?会发生什么? Q:Binder是如何进行权限控制的? Q:什么情况下会触发Binder的linkToDeath?如何触发? Q:Android中哪些IPC用到了Socket,为什么? Q:Handler是什么? Q:Handler机制主要包含什么?各自用途是什么? Q:Looper.prepare可以多次调用吗?为什么? Q:Handler中消息分发顺序? Q:用过Message的setAsynchronous吗?有什么用? Q:Looper 死循环为什么不会导致应用卡死，会消耗大量资源吗？ Q:主线程的Handler是在ActivityThread中启动的,那么他是一个线程吗?不是的话,那么主线程所依附的线程是什么? Q:为什么handler会造成内存泄漏?如何处理? Q:handler的postDelay是如何实现的?   Q:Linux都有哪些进程间通信方式（IPC）？Android呢?    Linux:
+ 管道：在创建时分配一个page大小的内存，缓存区大小比较有限； 消息队列：信息复制两次，额外的CPU消耗；不合适频繁或信息量大的通信； 共享内存：无须复制，共享缓冲区直接付附加到进程虚拟地址空间，速度快；但进程间的同步问题操作系统无法实现，必须各进程利用同步工具解决； 套接字：作为更通用的接口，传输效率低，主要用于不通机器或跨网络的通信； 信号量：常作为一种锁机制，防止某进程正在访问共享资源时，其他进程也访问该资源。因此，主要作为进程间以及同一进程内不同线程之间的同步手段。 信号: 不适用于信息交换，更适用于进程中断控制，比如非法内存访问，杀死某个进程等； Android: Binder Socket Handler  Q:什么是Binder?为什么使用Binder作为Android IPC？     使用mmap只拷贝一次内存使Binder变的高效  binder_mmap通过加锁，保证一次只有一个进程分配内存，保证多进程间的并发访问。 虚拟进程地址空间(vm_area_struct)和虚拟内核地址空间(vm_struct)都映射到同一块物理内存空间。当Client端与Server端发送数据时，Client（作为数据发送端）先从自己的进程空间把IPC通信数据copy_from_user拷贝到内核空间，而Server端（作为数据接收端）与内核共享数据，不再需要拷贝数据，而是通过内存地址空间的偏移量，即可获悉内存地址，整个过程只发生一次内存拷贝  Q:什么是mmap?    mmap是一种内存映射文件的方法，即将一个文件或者其它对象映射到进程的地址空间，实现文件磁盘地址和进程虚拟地址空间中一段虚拟地址的一一对映关系
+Q:为什么有共享内存了还需要设计Binder?    共享内存实现方式复杂，没有客户与服务端之别， 需要充分考虑到访问临界资源的并发同步问题，否则可能会出现死锁等问题；从这稳定性角度看，Binder架构优越于共享内存
+Q:ServiceManager启动流程?     打开binder驱动，并调用mmap()方法分配128k的内存映射空间：binder_open(); 通知binder驱动使其成为守护进程：binder_become_context_manager()； 验证selinux权限，判断进程是否有权注册或查看指定服务； 进入循环状态，等待Client端的请求：binder_loop()。 注册服务的过程，根据服务名称，但同一个服务已注册，重新注册前会先移除之前的注册信息； 死亡通知: 当binder所在进程死亡后,会调用binder_release方法,然后调用binder_node_release.</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://gyzboy.github.io/interview/android/%E5%8A%A8%E7%94%BB/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://gyzboy.github.io/interview/android/%E5%8A%A8%E7%94%BB/</guid>
+      <description>Q:View动画为何不能真正改变View的位置？而属性动画为何可以？属性动画是如何改变View的属性？    Q:属性动画插值器和估值器的作用？插值器和估值器分别是如何更改动画的？    </description>
+    </item>
+    
+  </channel>
+</rss>
