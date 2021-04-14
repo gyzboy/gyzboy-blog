@@ -858,7 +858,7 @@ img {
   margin: 1rem 0
 }
 .gdoc-markdown code {
-  background-color: rgba(233,236,239,.5);
+  /* background-color: rgba(233,236,239,.5); */
   font-size: .85em;
   line-height: 1.45;
   padding: .2em .4em
@@ -875,7 +875,7 @@ img {
   margin: 1rem 0
 }
 .chroma code {
-  background-color: rgba(233,236,239,.5);
+  /* background-color: rgba(233,236,239,.5); */
   display: block;
   line-height: 1.45;
   font-size: .85em;

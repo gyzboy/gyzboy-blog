@@ -1,1 +1,14 @@
 /* You can add custom styles here. */
+.chroma code {
+    display: block;
+    line-height: 1.45;
+    font-size: .85em;
+    border-radius: .15rem
+  }
+
+.gdoc-markdown code {
+    font-size: .85em;
+    line-height: 1.45;
+    padding: .2em .4em
+  }
+
