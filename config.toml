@@ -2,3 +2,5 @@ baseURL = "https://gyzboy.github.io/"
 languageCode = "en-us"
 title = "十万个为什么"
 theme = "hugo-geekdoc"
+pygmentsUseClasses=true
+pygmentsCodeFences=true
