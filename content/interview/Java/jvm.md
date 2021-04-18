@@ -15,6 +15,10 @@ date: 2021-04-13T16:12:16+08:00
 ## Q:类的加载过程?
 ![image](/class_load.png)
 加载、验证、准备、初始化、卸载这五个阶段的顺序是确定的，是依次有序的。但是解析阶段有可能会在初始化之后才会进行，这是为了支持java动态绑定的特性
+- 加载
+    * 通过一个类的全限定名获取定义此类的二进制字节流给了开发人员很大的灵活性,比如可以通过ZIP、网络、动态代理等技术加载指定二进制流
+- 准备
+    * 正式为类变量（static变量）分配内存并设置初始值,此时变量所使用的内存，将在**方法区**分配,并且初始值为默认值
 
 ## Q:Class.forName() 和ClassLoader.loadClass()区别？实际开发你用那种，为什么？
 - Class.forName() 和ClassLoader.loadClass()区别？
@@ -45,6 +49,44 @@ date: 2021-04-13T16:12:16+08:00
 
 ## Q:什么是双亲委派模型?有什么优势?
 双亲委派模型就是说一个类加载器收到了类加载的请求，不会自己先加载，而是把它交给自己的父类去加载，层层迭代,优势就是所有的类都会交给顶层父类加载器去实现,这样就实现了jvm中类的唯一性
+* 避免重复加载，如果已经加载，就不需要再次加载
+* 安全，如果你定义String类来代替系统的String类，这样会导致风险，但是在双亲委托模型中，String类在java虚拟机启动时就被加载了，你自定义的String类是不会被加载的
+```java
+protected Class<?> loadClass(String name, boolean resolve)
+        throws ClassNotFoundException{
+            // 首先检查类是否被加载过
+            Class<?> c = findLoadedClass(name);
+            if (c == null) {
+                try {
+                    if (parent != null) {//先用父加载器加载
+                        c = parent.loadClass(name, false);
+                    } else {//没有父加载器了用启动加载器加载
+                        c = findBootstrapClassOrNull(name);
+                    }
+                } catch (ClassNotFoundException e) {
+                    //如果父类抛出ClassNotFoundException异常
+                    //则说明父类不能加载该类
+                }
+
+                if (c == null) {
+                    //如果父类无法加载，则调用自身的findClass进行加
+                    c = findClass(name);
+                }
+            }
+            return c;
+    }
+```
+
+## Q:如何自定义一个类加载器?
+* 定义一个类并继承ClassLoader
+* 重写findClass方法，并且在findClass方法中调用defineClass方法
+    - byte[] data = loadClassData(name);//将文件内容转换为字节流
+    - defineClass(name, data, 0, data.length)//将字节流转换为class实例
+
+## Q:如何使用自定义类加载器加载文件?
+1. CustomClassLoader customClassLoader = new CustomClassLoader(filePath);//传入class文件路径
+2. Class<?> aClass = customClassLoader.findClass("com.gyz.Hello");//生成指定包名class文件
+3. 通过反射调用方法
 
 ## Q:为什么会出现破坏双亲委派的模型？是解决了什么问题？
 
