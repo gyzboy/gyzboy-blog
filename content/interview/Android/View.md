@@ -105,7 +105,20 @@ drawable： 他其实本身和bitmap没有关系, 你可以把他理解为是一
 4. 全局换肤
 
 
-## Q:SurfaceView是什么?有哪些应用场景?
+## Q:如何计算一个Bitmap的内存空间,如何加载一张高清大图?一般的图片加载优化都有哪些手段?
+* 内存:
+    * Bitmap内存占用 ≈ 像素数据总大小 = 图片宽 × 图片高× (当前设备密度dpi/图片所在文件夹对应的密度dpi）^2 × 每个像素的字节大小
+* 优化手段:
+    * 编码:options.inPreferredConfig = Bitmap.Config.RGB_565
+    * 采样:设置采样率，不能小于1 假如是2 则宽为之前的1/2，高为之前的1/2，一共缩小1/4 依次类推,options.inSampleSize = i;
+    * 复用:如果用了inBitmap这个属性，加载三张图片，这三张图片会指向同一块内存，而不用开辟三块内存空间,options.inMutable = true,不支持webp
+    * 匿名共享区
+* 加载高清大图:
+    * 1.提供图片的入口 
+    * 2.重写onTouchEvent,根据手势的移动更新显示区域的参数 
+    * 3.更新区域参数后，通过BitmapRegionDecoder.decodeRegion刷新控件重新绘制
+
+
 
 ## Q:一个viewGroup 绘制了4-5个view，当其中一个子view。例如背景变了。就会导致整个viewGroup的刷新。。请问有没有办法？仅仅只让对应的view更改UI。避免让viewGroup重新测量 绘制?
 调用view的invalidate方法，执行view的重新绘制
