@@ -166,3 +166,23 @@ Toast中TN类使用Handler是为了用队列和时间控制排队显示Toast,所
 如果在 performTraversals 前调用 View.post，则会将消息进行保存，之后在 dispatchAttachedToWindow 的时候通过 ViewRootImpl 中的 Handler 进行调用。
 如果在 performTraversals 以后调用 View.post，则直接通过 ViewRootImpl 中的 Handler 进行调用。
 
+## Q:View如何转换为Drawable?
+* 通过Canvas
+```java
+public Bitmap createViewBitmap(View v) {
+    Bitmap bitmap = Bitmap.createBitmap(v.getWidth(), v.getHeight(),
+                Bitmap.Config.ARGB_8888); //创建一个和View大小一样的Bitmap
+    Canvas canvas = new Canvas(bitmap);  //使用上面的Bitmap创建canvas
+    v.draw(canvas);  //把View画到Bitmap上
+    return bitmap;
+}
+```
+* 通过setDrawingCacheEnabled
+```java
+public Bitmap createViewBitmap(View v) {
+    view.setDrawingCacheEnabled(true);
+    Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
+    view.setDrawingCacheEnabled(false);
+    return bitmap;
+}
+```
