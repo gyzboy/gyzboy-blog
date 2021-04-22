@@ -144,6 +144,12 @@ attachViewToParent和detachViewFromParent方法，只会操作容器内的子视
 * 调用requestlayout，会导致自己的View设置两个标志位，并且向上调用父类的requestlayout并且设置标志位，不断向上传递，最后上传到ViewRootImp执行performTraversals执行measure,layout(在三大流程中检查标志位)（不一定执行onDraw,没有设置PFLAG_DIRTY_MASK标志位）
 * 调用Invalidate方法给该View设置PFLAG_DIRTY标志位，然后不断计算在父容器中的区域向上传递(设置标志位)，最终传递到RootViewImp执行scheduleTraversals然后执行performTraversals，然后measure,layout,draw三个方法，由于没有设置PFLAG_FORCE_LAYOUT标志位，只能执行draw方法，前面两个不执行(不是不执行，只是不执行特有的方法)
 
+## Q:view.requestLayout如果在灭屏或者切home之后调用会怎么样?
+### 锁屏后，调用View.requestLayout()，会往上层层调用requestLayout()吗?
+>- 在View调用完layout方法，会将PFLAG_FORCE_LAYOUT标志位清除掉。当View下次再调用requestLayout方法时，依旧能往上层层调用。但是如果当layout()方法没有执行时，下次再调用requestLayout方法时，就不会往上层层调用了,锁屏后，除了第一次调用会往上层层调用，其它的都不会,所以不会往上层层调用
+### 锁屏后，调用View.requestLayout()，会触发View的测量和布局操作吗？
+>- 不会，因为当前Activity处于stopped状态了
+
 ## Q:ViewStub是什么?有什么应用场景?原理是什么?
 ViewStub是一个不可见的，宽高为0的View，可用于在程序运行的时候延迟  加载布局资源的（用于实现布局资源的“懒加载”),当使ViewStub可见或者调用inflate方法，可以使布局资源被加载！
 初始化时setWillNotDraw(true),onMeasure时设置宽高为0，onDraw中不进行任何绘制
