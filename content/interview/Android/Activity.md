@@ -184,6 +184,12 @@ onCreate - onStart - onResume - measure - layout -measure - layout - draw - onWi
 ## Q:activity从启动到显示,都经历了什么?
 ![image](/activityToViewShow.webp)
 
+## Q:Activity、PhoneWindow、DecorView、ViewRootImpl之间的关系?
+* Activity创建于performLaunchActivity方法中，在startActivity时候触发。
+* PhoneWindow，同样创建于performLaunchActivity方法中，再具体点就是Activity的attach方法。
+* DecorView，创建于setContentView->PhoneWindow.installDecor。
+* ViewRootImpl，创建于handleResumeActivity方法中，最后通过addView被创建
+
 ## Q:activity在屏幕旋转后如何保持下载不中断?
 Fragment设置setRetaineInstance保持下载操作
 

@@ -126,3 +126,7 @@ private final String fragmentShaderCode =
         GLES20.glDisableVertexAttribArray(mPositionHandle);
     }   
 ```
+
+## 变化矩阵
+![image](/matrix_rule1.png)
+![image](/matrix_rule2.png)
