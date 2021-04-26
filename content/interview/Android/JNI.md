@@ -16,6 +16,9 @@ weight: -20
 * 在defaultConfig里面的externalNativeBuild {}代码块用cmake主要是填写CMake命令参数
 
 ## CmakeList文件解析
+* #配置加载头文件
+    include_directories(./src/main/cpp/include)
+    file(GLOB main_src "src/main/cpp/*.cpp") //定义main_src变量
 * add_library(native-lib SHARED native-lib.cpp) 可以定义多个库，CMake会构建他们，Gradle将自动把共享库打入APK中
     >- 第一个参数：设置这个库的名字
     >- 第二个参数：设置库的类型，SHARE 动态库.so后缀 ,STATIC 静态库 .a后缀
@@ -26,6 +29,7 @@ weight: -20
 * target_link_libraries(native-lib ${log-lib})关联库，将指定的库关联起来
     >- 第一个参数：目标库
     >- 第二个参数：将目标库链接到日志库包含在NDK中。
+* set_target_properties(库名称 PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/libs/${ANDROID_ABI}/xxx.so)
 
 ## JNI作用？
 * 调用java函数：使用JNIEnv调用java中的代码

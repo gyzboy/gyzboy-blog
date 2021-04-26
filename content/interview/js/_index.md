@@ -1,3 +1,3 @@
 ---
-title: openGL
+title: JS
 ---
