@@ -73,6 +73,60 @@ getLocalVisibleRect:红色部分在View自身里的区域:rect=[200,0,600,200]
 * ViewRootImpl与Window产生联系，是在WindowManagerImpl#addView方法中，这个过程中会new一个ViewRootImpl与DecorView相对应，保存在WindowManagerGloable中；
 * 总的来说，就是setContentView生成了DecorView及其视图，在onResume之后才把这个视图添加进了Window和WMS中，具备了交互能力
 
+## Q:遍历ViewGroup中的View
+```java
+    //递归方式
+    public int traverseViewGroup(View view) {
+        int viewCount = 0;
+        if (null == view) {
+            return 0;
+        }
+        if (view instanceof ViewGroup) {
+            //遍历ViewGroup,是子view加1，是ViewGroup递归调用
+            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                View child = ((ViewGroup) view).getChildAt(i);
+                if (child instanceof ViewGroup) {
+                    viewCount += traverseViewGroup(((ViewGroup) view).getChildAt(i));
+                } else {
+                    viewCount++;
+                }
+            }
+        } else {
+            viewCount++;
+        }
+        return viewCount;
+    }
+
+    //非递归方式
+    public int traverseViewGroup(View view) {
+        int viewCount = 0;
+        if (null == view) {
+            return 0;
+        }
+        if (view instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) view;
+            LinkedList<ViewGroup> linkedList = new LinkedList<>();
+            linkedList.add(viewGroup);
+            while (!linkedList.isEmpty()) {
+                //removeFirst()删除第一个元素，并返回该元素
+                ViewGroup current = linkedList.removeFirst();
+                viewCount++;
+                //遍历linkedList中第一个viewGroup中的子view
+                for (int i = 0; i < current.getChildCount(); i++) {
+                    if (current.getChildAt(i) instanceof ViewGroup) {
+                        linkedList.addLast((ViewGroup) current.getChildAt(i));
+                    } else {
+                        viewCount++;
+                    }
+                }
+            }
+        } else {
+            viewCount++;
+        }
+        return viewCount;
+    }
+```
+
 ## Q:ViewGroup有onMeasure方法吗？为什么?
 没有，这个方法是交给子类自己实现的。不同的viewgroup子类 肯定布局都不一样，那onMeasure索性就全部交给他们自己实现好了
 
