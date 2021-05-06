@@ -17,6 +17,12 @@ date: 2021-04-13T16:12:16+08:00
 ### 虚引用
 >- 虚引用并不会决定对象的生命周期。如果一个对象仅持有虚引用，那么它就和没有任何引用一样，在任何时候都可能被垃圾回收器回收。
 在创建虚引用实例时，可以传入一个引用队列（ReferenceQueue）将该软引用与引用队列关联，这样当软引用所引用的对象被垃圾回收器回收前，Jvm虚拟机就会把这个软引用加入到与之关联的引用队列中
+```java
+String str = new String("abc");
+ReferenceQueue queue = new ReferenceQueue();
+// 创建虚引用，要求必须与一个引用队列关联
+PhantomReference pr = new PhantomReference(str, queue);
+```
 
 ## 如何通过引用队列判断是否发生内存泄漏?
 软引用、弱引用、虚引用的构造方法均可以传入一个ReferenceQueue与之关联。在引用所指的对象被回收后，引用（reference)本身将会被加入到ReferenceQueue之中，此时引用所引用的对象reference.get()已被回收 (reference此时不为null，reference.get()此时为null)。
