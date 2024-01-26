@@ -1,10 +1,10 @@
-name: Generate Site
+name: hugo
 on:
   push:
     branches:
       - master
 jobs:
-  build-deploy:
+  build:
     runs-on: ubuntu-18.04
     steps:
       - name: Check out source
@@ -14,10 +14,9 @@ jobs:
         uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: "latest" # 可以修改为你使用的 Hugo 版本
-          extended: true # 设置是否需要 extended 版本
           
       - name: Build
-        run: hugo --minify
+        run: hugo
         
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
@@ -27,5 +26,3 @@ jobs:
           publish_dir: ./public
           keep_files: false
           publish_branch: master
-          # 如果使用自定义域名，还需要添加下面一行配置
-          # cname: www.fournoas.com
