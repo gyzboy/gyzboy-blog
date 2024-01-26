@@ -1,25 +1,26 @@
 name: hugo
 on:
-  push:
+    push:
 jobs:
-  build:
-    runs-on: ubuntu-18.04
-    steps:
-      - name: Check out source
-        uses: actions/checkout@v2
-        
-      - name: Setup hugo
-        uses: peaceiris/actions-hugo@v2
-        with:
-          hugo-version: "latest" # 可以修改为你使用的 Hugo 版本
-          
-      - name: Build
-        run: hugo
-        
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          deploy_key: ${{ secrets.GH_PAGE_ACTION_TOKEN }} # 另外还支持 github_token 和 personal_token
-          external_repository: gyzboy/gyzboy.github.io # 修改为你的 GitHub Pages 仓库
-          publish_dir: ./public
-          publish_branch: master
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: Setup Hugo
+              uses: peaceiris/actions-hugo@v2
+              with:
+                  hugo-version: 0.101.0
+                  extended: true
+
+            - name: Build Web
+              run: hugo --gc --minify
+
+            - name: Deploy Web
+              uses: peaceiris/actions-gh-pages@v3
+              with:
+                  deploy_key: ${{ secrets.GH_PAGE_ACTION_TOKEN }} # 另外还支持 github_token 和 personal_token
+                  external_repository: gyzboy/gyzboy.github.io # 修改为你的 GitHub Pages 仓库
+                  publish_dir: ./public
+                  publish_branch: master
