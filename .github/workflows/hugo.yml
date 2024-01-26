@@ -22,7 +22,6 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           deploy_key: ${{ secrets.GH_PAGE_ACTION_TOKEN }} # 另外还支持 github_token 和 personal_token
-          external_repository: gyzboy/gyzboy.github.io` # 修改为你的 GitHub Pages 仓库
+          external_repository: gyzboy/gyzboy.github.io # 修改为你的 GitHub Pages 仓库
           publish_dir: ./public
-          keep_files: false
           publish_branch: master
